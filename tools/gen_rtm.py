@@ -58,11 +58,20 @@ def load_requirements() -> tuple[dict[str, Hlr], dict[str, Llr]]:
     hlrs: dict[str, Hlr] = {}
     llrs: dict[str, Llr] = {}
     for md in sorted(REQ_DIR.glob("*.md")):
-        for line in md.read_text(encoding="utf-8").splitlines():
+        lines = md.read_text(encoding="utf-8").splitlines()
+        cur: Hlr | None = None
+        for line in lines:
             mh = HLR_RE.match(line)
             if mh:
-                hlrs[mh.group(1)] = Hlr(mh.group(1), mh.group(2).strip())
+                cur = Hlr(mh.group(1), mh.group(2).strip())
+                hlrs[cur.rid] = cur
                 continue
+            # continuation line of the current HLR: indented, not a new bullet
+            if cur is not None and line.startswith("  ") and line.strip() \
+                    and not line.lstrip().startswith(("- ", "|", "#")):
+                cur.text = (cur.text + " " + line.strip()).strip()
+                continue
+            cur = None
             ml = LLR_ROW_RE.match(line)
             if ml and ml.group(1).startswith("LLR-"):
                 rid, traces, text, code = ml.groups()
@@ -141,6 +150,15 @@ def write_html(hlrs, llrs, problems) -> None:
     def esc(s: str) -> str:
         return html.escape(s)
 
+    def md(s: str) -> str:
+        """Escape, then render `inline code` spans."""
+        parts = s.split("`")
+        out = []
+        for i, part in enumerate(parts):
+            out.append(f"<code>{html.escape(part)}</code>" if i % 2
+                       else html.escape(part))
+        return "".join(out)
+
     rows = []
     for comp in sorted({component_of(h) for h in hlrs}):
         comp_hlrs = sorted(
@@ -154,7 +172,7 @@ def write_html(hlrs, llrs, problems) -> None:
                 llr = llrs.get(lid)
                 first = i == 0
                 hcell = (f'<td rowspan="{len(child)}"><b>{esc(hlr.rid)}</b>'
-                         f'<div class="t">{esc(hlr.text)}</div></td>') if first else ""
+                         f'<div class="t">{md(hlr.text)}</div></td>') if first else ""
                 if llr is None:
                     rows.append(
                         f'<tr>{hcell}<td class="bad">— no LLR —</td>'
@@ -165,8 +183,8 @@ def write_html(hlrs, llrs, problems) -> None:
                           else '<span class="bad">GAP</span>')
                 rows.append(
                     f"<tr>{hcell}"
-                    f'<td><b>{esc(llr.rid)}</b><div class="t">{esc(llr.text)}</div></td>'
-                    f"<td><code>{esc(llr.code)}</code></td>"
+                    f'<td><b>{esc(llr.rid)}</b><div class="t">{md(llr.text)}</div></td>'
+                    f"<td>{md(llr.code)}</td>"
                     f"<td><code>test_sc_{esc(_comp_file(comp.lower()))}.c</code></td>"
                     f"<td>{status}</td></tr>")
 

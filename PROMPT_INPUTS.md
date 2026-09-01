@@ -59,6 +59,25 @@ landing + architecture count updates. 14 components, 67 HLR / 170 LLR,
 
 ---
 
+**2026-09-01** (later still, after emailing the PACT MCP demo recording,
+the local Pages site open in a browser):
+
+> you can naviaget to dal c and keep working
+
+> local and keep building before github
+
+(Added `sc_watchdog` — a latching deadline supervisor that pairs with
+`sc_sched`: a supervised activity must kick once per `timeout` ticks or the
+watchdog trips and stays tripped until re-armed. Full pipeline: 6 HLR /
+12 LLR, 9-test suite (53 checks) with MC/DC on both compound decisions, a
+fuzz invariant (latch monotonic, elapsed pinned at the ceiling). Also
+fixed `gen_rtm.py`'s component→test-file map, which had been showing
+cosmetic GAP badges for `sc_debounce` / `sc_fixed` / `sc_sched`.
+15 components, 73 HLR / 182 LLR, 2479 checks, 543 lines / 374 conditions,
+100% line + 100% MC/DC held.)
+
+---
+
 ## Scope decisions made during the build
 
 - v1 components: `sc_hysteresis`, `sc_ringbuf`, `sc_ratelimit`. Grew to four

@@ -139,6 +139,10 @@ _COMP_FILE = {
     "rb": "ringbuf",
     "rl": "ratelimit",
     "sat": "sat",
+    "db": "debounce",
+    "fx": "fixed",
+    "sch": "sched",
+    "wdg": "watchdog",
 }
 
 

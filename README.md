@@ -17,7 +17,7 @@ throughout.
 
 ## Components
 
-Fourteen components:
+Fifteen components:
 
 | Ref | Module | Purpose | LLR |
 |---|---|---|---|
@@ -35,8 +35,9 @@ Fourteen components:
 | SC-SCH | `sc_sched` | Cooperative cyclic scheduler — task table with per-task period and phase, deterministic tick-driven dispatch, no preemption. | 9 |
 | SC-PID | `sc_pid` | Positional PID: derivative-on-measurement + first-order low-pass, output clamp, conditional-integration anti-windup. | 16 |
 | SC-VOTE | `sc_vote` | M-of-N redundancy voter: clusters replicated channel readings by tolerance, reports the majority value, agreeing count, dissenting-channel mask, and a consensus verdict. | 14 |
+| SC-WDG | `sc_watchdog` | Latching deadline supervisor — a supervised activity must kick once per `timeout` ticks; a missed deadline trips and stays tripped until re-armed. Bounded up-counter, fail-safe on NULL. | 12 |
 
-67 high-level / 170 low-level requirements, **2426** requirements-based test
+73 high-level / 182 low-level requirements, **2479** requirements-based test
 checks, a 200k-iteration invariant fuzz harness, **100%** statement and
 **100%** branch/condition (MC/DC) coverage.
 

@@ -271,6 +271,46 @@ static void fuzz_vote(void)
     INV((r.verdict == SC_VOTE_OK) == (r.agreeing >= cfg.agree));
 }
 
+/* sc_watchdog: elapsed never exceeds timeout and never wraps; the tripped
+ * flag is monotonic (never clears without an init) and exactly tracks
+ * "elapsed has reached timeout at some point since the last init"; the tick
+ * verdict and expired() agree with that latched flag. */
+static void fuzz_watchdog(void)
+{
+    sc_watchdog_config_t cfg;
+    sc_watchdog_state_t st;
+    uint16_t model_elapsed = 0u;
+    bool model_tripped = false;
+    unsigned k;
+
+    cfg.timeout = (uint16_t)(1u + (rnd() % 64u));
+    if (sc_watchdog_config_valid(&cfg) != SC_OK) { return; }
+    if (sc_watchdog_init(&st) != SC_OK) { return; }
+
+    for (k = 0u; k < 60u; k++)
+    {
+        if ((rnd() & 3u) == 0u)            /* ~1 in 4: kick */
+        {
+            sc_watchdog_kick(&st);
+            model_elapsed = 0u;            /* latch unchanged */
+        }
+        else
+        {
+            sc_watchdog_verdict_t v = sc_watchdog_tick(&cfg, &st);
+            if (model_elapsed < cfg.timeout)
+            {
+                model_elapsed = (uint16_t)(model_elapsed + 1u);
+                if (model_elapsed >= cfg.timeout) { model_tripped = true; }
+            }
+            INV((v == SC_WATCHDOG_TRIPPED) == model_tripped);
+        }
+        INV(st.elapsed == model_elapsed);
+        INV(st.elapsed <= cfg.timeout);
+        INV(sc_watchdog_expired(&st) == model_tripped);
+        INV(!model_tripped || st.tripped);   /* monotonic latch */
+    }
+}
+
 int main(void)
 {
     uint32_t i;
@@ -284,6 +324,7 @@ int main(void)
         fuzz_hysteresis();
         fuzz_median();
         fuzz_vote();
+        fuzz_watchdog();
     }
     (void)printf("%u iterations, %u invariant failure(s)\n", ITERS, failures);
     return (failures == 0u) ? EXIT_SUCCESS : EXIT_FAILURE;

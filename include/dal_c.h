@@ -22,5 +22,6 @@
 #include "sc_sched.h"
 #include "sc_pid.h"
 #include "sc_vote.h"
+#include "sc_watchdog.h"
 
 #endif /* DAL_C_H */

@@ -50,4 +50,7 @@ extern const unsigned     sc_suite_pid_count;
 extern const sc_test_case sc_suite_vote[];
 extern const unsigned     sc_suite_vote_count;
 
+extern const sc_test_case sc_suite_watchdog[];
+extern const unsigned     sc_suite_watchdog_count;
+
 #endif /* DAL_C_SC_SUITES_H */

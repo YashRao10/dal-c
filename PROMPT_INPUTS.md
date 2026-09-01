@@ -42,6 +42,23 @@ fuzz invariant, RTM/verification regen, and the docs-site counts.)
 
 ---
 
+**2026-09-01** (later, during a Robinhood/financials session that pivoted
+back to dal-c):
+
+> ok you can start doing more updates on dal c and more updates
+
+> ok you can keep working
+
+(Added `sc_vote` — an M-of-N redundancy voter: clusters replicated channel
+readings by a tolerance, returns the majority value, the agreeing count, a
+dissenting-channel bitmask, and a consensus verdict. Full pipeline:
+5 HLR / 14 LLR, requirements-based suite with MC/DC cases for every compound
+decision, a fuzz invariant, RTM/verification/coverage regen, README +
+landing + architecture count updates. 14 components, 67 HLR / 170 LLR,
+2426 checks, 100% line + 100% MC/DC held.)
+
+---
+
 ## Scope decisions made during the build
 
 - v1 components: `sc_hysteresis`, `sc_ringbuf`, `sc_ratelimit`. Grew to four

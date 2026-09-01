@@ -17,7 +17,7 @@ throughout.
 
 ## Components
 
-Thirteen components:
+Fourteen components:
 
 | Ref | Module | Purpose | LLR |
 |---|---|---|---|
@@ -34,8 +34,9 @@ Thirteen components:
 | SC-SM | `sc_sm` | Table-driven finite state machine engine — transition table of (from, event, to, action), bounded scan, first match wins. | 11 |
 | SC-SCH | `sc_sched` | Cooperative cyclic scheduler — task table with per-task period and phase, deterministic tick-driven dispatch, no preemption. | 9 |
 | SC-PID | `sc_pid` | Positional PID: derivative-on-measurement + first-order low-pass, output clamp, conditional-integration anti-windup. | 16 |
+| SC-VOTE | `sc_vote` | M-of-N redundancy voter: clusters replicated channel readings by tolerance, reports the majority value, agreeing count, dissenting-channel mask, and a consensus verdict. | 14 |
 
-62 high-level / 156 low-level requirements, **2357** requirements-based test
+67 high-level / 170 low-level requirements, **2426** requirements-based test
 checks, a 200k-iteration invariant fuzz harness, **100%** statement and
 **100%** branch/condition (MC/DC) coverage.
 

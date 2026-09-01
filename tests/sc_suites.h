@@ -47,4 +47,7 @@ extern const unsigned     sc_suite_frame_count;
 extern const sc_test_case sc_suite_pid[];
 extern const unsigned     sc_suite_pid_count;
 
+extern const sc_test_case sc_suite_vote[];
+extern const unsigned     sc_suite_vote_count;
+
 #endif /* DAL_C_SC_SUITES_H */

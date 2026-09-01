@@ -230,6 +230,47 @@ static void fuzz_median(void)
     }
 }
 
+/* sc_vote: value is always one of the inputs; agreeing in [1, count] and
+ * equals the number of channels within tolerance of value; every dissenting
+ * bit is exactly the channels that are not; verdict tracks agreeing vs
+ * agree. */
+static void fuzz_vote(void)
+{
+    sc_vote_config_t cfg;
+    int32_t in[SC_VOTE_MAX_INPUTS];
+    sc_vote_result_t r;
+    unsigned within_cnt = 0u;
+    bool value_is_input = false;
+    unsigned i;
+
+    cfg.count     = (uint8_t)(2u + (rnd() % (unsigned)(SC_VOTE_MAX_INPUTS - 1)));
+    cfg.agree     = (uint8_t)(1u + (rnd() % (unsigned)cfg.count));
+    cfg.tolerance = (int32_t)(rnd() % 1000u);
+    if (sc_vote_config_valid(&cfg) != SC_OK) { return; }
+
+    for (i = 0u; i < (unsigned)cfg.count; i++)
+    {
+        in[i] = (int32_t)(rnd() % 5000u) - 2500;
+    }
+    if (sc_vote_evaluate(&cfg, in, cfg.count, &r) != SC_OK) { return; }
+
+    INV(r.agreeing >= 1u);
+    INV(r.agreeing <= cfg.count);
+    for (i = 0u; i < (unsigned)cfg.count; i++)
+    {
+        int64_t d = (int64_t)in[i] - (int64_t)r.value;
+        bool near;
+        if (d < 0) { d = -d; }
+        near = (d <= (int64_t)cfg.tolerance);
+        if (in[i] == r.value) { value_is_input = true; }
+        if (near) { within_cnt++; }
+        INV((((unsigned)r.dissenting >> i) & 1u) == (near ? 0u : 1u));
+    }
+    INV(value_is_input);
+    INV(within_cnt == r.agreeing);
+    INV((r.verdict == SC_VOTE_OK) == (r.agreeing >= cfg.agree));
+}
+
 int main(void)
 {
     uint32_t i;
@@ -242,6 +283,7 @@ int main(void)
         fuzz_cobs();
         fuzz_hysteresis();
         fuzz_median();
+        fuzz_vote();
     }
     (void)printf("%u iterations, %u invariant failure(s)\n", ITERS, failures);
     return (failures == 0u) ? EXIT_SUCCESS : EXIT_FAILURE;

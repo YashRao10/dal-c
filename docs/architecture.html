@@ -48,7 +48,7 @@ a{color:#8fb9d4}
 
 <p class="eyebrow" style="margin-top:52px">Applied engineering</p>
 <h1>Architecture</h1>
-<p class="lede">How the thirteen components depend on each other, the framework
+<p class="lede">How the fourteen components depend on each other, the framework
 pieces (<code>sc_sm</code> the state-machine engine, <code>sc_sched</code> the
 cyclic scheduler, <code>sc_pid</code> the controller), and how the worked
 example wires six of them into one loop.</p>
@@ -56,7 +56,7 @@ example wires six of them into one loop.</p>
 <section>
   <p class="shead"><span class="num">&sect;A</span>Dependency graph</p>
   <h2>What builds on what</h2>
-  <p class="note">Eight components are leaf primitives with no dal-c dependency.
+  <p class="note">Nine components are leaf primitives with no dal-c dependency.
   <code>sc_sat</code> is the saturating-arithmetic base that three others build
   on; <code>sc_fixed</code> in turn underpins <code>sc_pid</code>. Nothing
   depends on anything outside the standard headers.</p>
@@ -200,6 +200,7 @@ example wires six of them into one loop.</p>
     <div class="row"><span class="nm">sc_fixed</span><span class="track"><i style="width:100%"></i></span><span class="n">21</span></div>
     <div class="row"><span class="nm">sc_ratelimit</span><span class="track"><i style="width:86%"></i></span><span class="n">18</span></div>
     <div class="row"><span class="nm">sc_pid</span><span class="track"><i style="width:76%"></i></span><span class="n">16</span></div>
+    <div class="row"><span class="nm">sc_vote</span><span class="track"><i style="width:67%"></i></span><span class="n">14</span></div>
     <div class="row"><span class="nm">sc_cobs</span><span class="track"><i style="width:62%"></i></span><span class="n">13</span></div>
     <div class="row"><span class="nm">sc_hysteresis</span><span class="track"><i style="width:57%"></i></span><span class="n">12</span></div>
     <div class="row"><span class="nm">sc_ringbuf</span><span class="track"><i style="width:57%"></i></span><span class="n">12</span></div>

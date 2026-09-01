@@ -241,7 +241,7 @@ footer{{margin-top:30px;color:var(--ink-lo);font-size:11px;font-family:var(--mon
 </style></head><body><div class="wrap">
 <div class="mark">
   <svg width="24" height="16" viewBox="0 0 26 18" fill="none"><path d="M2 13 C2 5 8 3 13 9 C18 15 24 13 24 5" stroke="#f2b13c" stroke-width="2" stroke-linecap="round"/></svg>
-  dal-c <a href="index.html">&larr; overview</a>
+  dal-c library <a href="index.html">&larr; overview</a>
 </div>
 <p class="eyebrow">&sect; Traceability</p>
 <h1>Requirements Traceability Matrix</h1>

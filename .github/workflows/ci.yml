@@ -26,16 +26,18 @@ jobs:
       - name: Build and run the test suite (strict warnings, -Werror)
         run: make CC=gcc-14
 
-      - name: Structural coverage (statement / branch / MC-DC)
-        run: make coverage CC=gcc-14
+      - name: Coverage + traceability + verification report
+        # runs the suite instrumented, checks 100% line and 100% MC/DC,
+        # regenerates docs/traceability.html and docs/verification.html,
+        # and fails on any traceability gap
+        run: make report CC=gcc-14
 
-      - name: Coverage report + thresholds
+      - name: Browsable coverage report
         run: |
           mkdir -p docs/coverage
           gcovr --root . --filter 'src/' \
                 --html-details docs/coverage/index.html \
-                --txt --print-summary \
-                --decisions \
+                --decisions --print-summary \
                 --fail-under-line 100 --fail-under-branch 100
 
       - name: Static analysis (cppcheck)
@@ -44,13 +46,6 @@ jobs:
                    --inline-suppr --error-exitcode=1 \
                    --suppress=missingIncludeSystem \
                    -I include src
-
-      - name: Requirements traceability matrix
-        run: python3 tools/gen_rtm.py
-
-      - name: Bundle site
-        run: cp -f README.md docs/README.md
-        # docs/index.html, docs/traceability.html, docs/coverage/ are now all present
 
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'

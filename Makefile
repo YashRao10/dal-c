@@ -22,7 +22,7 @@ TEST_OBJ := $(patsubst tests/%.c,$(BUILD)/t_%.o,$(TEST_SRC))
 OBJ      := $(SRC_OBJ) $(TEST_OBJ)
 TEST_BIN := $(BUILD)/dal-c-tests
 
-.PHONY: all test coverage clean
+.PHONY: all test coverage report clean
 
 all: test
 
@@ -44,11 +44,17 @@ test: $(TEST_BIN)
 # Structural coverage. MC/DC via GCC condition coverage (GCC >= 14).
 coverage: OPT := -O0 -g --coverage -fcondition-coverage
 coverage: clean $(TEST_BIN)
-	./$(TEST_BIN)
+	./$(TEST_BIN) --report | tee $(BUILD)/test-output.txt
 	@echo
 	@echo "=== gcov: statement / branch / condition (MC-DC) ==="
-	gcov --branch-counts --conditions --object-directory $(BUILD) $(SRC)
+	gcov --branch-counts --conditions --object-directory $(BUILD) $(SRC) \
+		| tee $(BUILD)/coverage-summary.txt
 	@mkdir -p $(BUILD)/gcov && mv -f *.gcov $(BUILD)/gcov/ 2>/dev/null || true
+
+# Regenerate the published verification artifacts from a real run.
+report: coverage
+	python3 tools/gen_rtm.py
+	python3 tools/gen_report.py
 
 clean:
 	rm -rf $(BUILD) *.gcov *.gcda *.gcno

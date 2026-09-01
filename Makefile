@@ -78,6 +78,7 @@ coverage: clean $(TEST_BIN)
 report: coverage
 	python3 tools/gen_rtm.py
 	python3 tools/gen_report.py
+	python3 tools/gen_coverage.py
 
 # Run the suite and the example under UBSan + ASan; any finding aborts.
 sanitize: OPT := -O1 -g -fsanitize=undefined,address -fno-sanitize-recover=all

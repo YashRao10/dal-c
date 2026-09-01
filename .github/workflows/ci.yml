@@ -18,9 +18,8 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-14 gcovr cppcheck python3
+          sudo apt-get install -y gcc-14 cppcheck python3
           gcc-14 --version | head -1
-          gcovr --version | head -1
           cppcheck --version
 
       - name: Build and run the test suite (strict warnings, -Werror)
@@ -32,18 +31,11 @@ jobs:
       - name: Static library
         run: make lib CC=gcc-14 && ls -l build/libdal_c.a
 
-      - name: Coverage + traceability + verification report
-        # instrumented run; fails under 100% line / 100% MC-DC, regenerates
-        # docs/traceability.html and docs/verification.html, fails on any gap
+      - name: Coverage + traceability + verification + coverage report
+        # instrumented run; regenerates docs/traceability.html,
+        # docs/verification.html and docs/coverage/; fails under 100% line /
+        # 100% MC-DC or on any traceability gap
         run: make report CC=gcc-14
-
-      - name: Browsable coverage report
-        run: |
-          mkdir -p docs/coverage
-          gcovr --root . --filter 'src/' \
-                --html-details docs/coverage/index.html \
-                --decisions --print-summary \
-                --fail-under-line 100 --fail-under-branch 100
 
       - name: Static analysis (cppcheck)
         run: |

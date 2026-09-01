@@ -33,7 +33,7 @@ typedef struct
     unsigned           count;
 } suite_entry;
 
-#define SUITE_COUNT 10u
+#define SUITE_COUNT 12u
 
 int main(int argc, char **argv)
 {
@@ -68,9 +68,15 @@ int main(int argc, char **argv)
     suites[8].name = "sc_sm";
     suites[8].cases = sc_suite_sm;
     suites[8].count = sc_suite_sm_count;
-    suites[9].name = "sc_pid";
-    suites[9].cases = sc_suite_pid;
-    suites[9].count = sc_suite_pid_count;
+    suites[9].name = "sc_sched";
+    suites[9].cases = sc_suite_sched;
+    suites[9].count = sc_suite_sched_count;
+    suites[10].name = "sc_cobs";
+    suites[10].cases = sc_suite_frame;
+    suites[10].count = sc_suite_frame_count;
+    suites[11].name = "sc_pid";
+    suites[11].cases = sc_suite_pid;
+    suites[11].count = sc_suite_pid_count;
 
     for (s = 0u; s < SUITE_COUNT; s++)
     {

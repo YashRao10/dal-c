@@ -14,9 +14,11 @@
 #include "sc_hysteresis.h"
 #include "sc_debounce.h"
 #include "sc_ringbuf.h"
+#include "sc_cobs.h"
 #include "sc_ratelimit.h"
 #include "sc_lut.h"
 #include "sc_sm.h"
+#include "sc_sched.h"
 #include "sc_pid.h"
 
 #endif /* DAL_C_H */

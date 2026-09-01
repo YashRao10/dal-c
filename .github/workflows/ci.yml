@@ -28,6 +28,9 @@ jobs:
       - name: Worked example
         run: make example CC=gcc-14
 
+      - name: Property / invariant fuzz (200k iterations)
+        run: make fuzz CC=gcc-14
+
       - name: Static library
         run: make lib CC=gcc-14 && ls -l build/libdal_c.a
 

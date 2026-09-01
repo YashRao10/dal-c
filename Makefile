@@ -17,7 +17,7 @@ CFLAGS    = $(CSTD) $(WARN) $(OPT)
 
 BUILD    := build
 SRC      := $(wildcard src/*.c)
-TEST_SRC := $(wildcard tests/*.c)
+TEST_SRC := $(filter-out tests/fuzz.c,$(wildcard tests/*.c))
 HDR      := $(wildcard include/*.h) $(wildcard tests/*.h)
 SRC_OBJ  := $(patsubst src/%.c,$(BUILD)/%.o,$(SRC))
 TEST_OBJ := $(patsubst tests/%.c,$(BUILD)/t_%.o,$(TEST_SRC))
@@ -25,7 +25,7 @@ OBJ      := $(SRC_OBJ) $(TEST_OBJ)
 TEST_BIN := $(BUILD)/dal-c-tests
 LIB      := $(BUILD)/libdal_c.a
 
-.PHONY: all test coverage report lib example install sanitize clean
+.PHONY: all test coverage report lib example install sanitize fuzz clean
 
 all: test
 
@@ -80,11 +80,19 @@ report: coverage
 	python3 tools/gen_report.py
 	python3 tools/gen_coverage.py
 
-# Run the suite and the example under UBSan + ASan; any finding aborts.
+# Run the suite, the example and the fuzz harness under UBSan + ASan.
 sanitize: OPT := -O1 -g -fsanitize=undefined,address -fno-sanitize-recover=all
-sanitize: clean $(TEST_BIN) $(BUILD)/example
+sanitize: clean $(TEST_BIN) $(BUILD)/example $(BUILD)/fuzz
 	./$(TEST_BIN)
 	./$(BUILD)/example >/dev/null
+	./$(BUILD)/fuzz
+
+# Randomised property / invariant harness.
+fuzz: $(BUILD)/fuzz
+	./$(BUILD)/fuzz
+
+$(BUILD)/fuzz: tests/fuzz.c $(SRC) $(HDR) | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) tests/fuzz.c $(SRC) -o $@
 
 clean:
 	rm -rf $(BUILD) *.gcov *.gcda *.gcno

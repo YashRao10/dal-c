@@ -17,7 +17,7 @@ throughout.
 
 ## Components
 
-Ten components:
+Twelve components:
 
 | Ref | Module | Purpose | LLR |
 |---|---|---|---|
@@ -26,14 +26,17 @@ Ten components:
 | SC-CRC | `sc_crc` | Bitwise CRC-8/SMBUS, CRC-16/CCITT-FALSE, CRC-32/ISO-HDLC. No lookup tables. | 8 |
 | SC-HYS | `sc_hysteresis` | Schmitt-trigger comparator with independent assert / clear thresholds. | 12 |
 | SC-DBN | `sc_debounce` | Integrator debounce for a noisy digital input — rejects bursts shorter than a sample-count threshold. | 9 |
+| SC-COBS | `sc_cobs` | Consistent Overhead Byte Stuffing — frame a byte stream so `0x00` can delimit it. Encode / decode, exact round-trip. | 13 |
 | SC-RB | `sc_ringbuf` | Fixed-capacity byte FIFO over caller storage. No `malloc`, unambiguous full / empty. | 12 |
 | SC-RL | `sc_ratelimit` | Slew-rate limiter with output clamp, on saturating arithmetic. | 18 |
 | SC-LUT | `sc_lut` | Piecewise-linear lookup table with clamped extrapolation — sensor linearisation, command shaping. | 10 |
 | SC-SM | `sc_sm` | Table-driven finite state machine engine — transition table of (from, event, to, action), bounded scan, first match wins. | 11 |
+| SC-SCH | `sc_sched` | Cooperative cyclic scheduler — task table with per-task period and phase, deterministic tick-driven dispatch, no preemption. | 9 |
 | SC-PID | `sc_pid` | Positional PID: derivative-on-measurement + first-order low-pass, output clamp, conditional-integration anti-windup. | 16 |
 
-51 high-level / 123 low-level requirements, **1159** requirements-based test
-checks, **100%** statement and **100%** branch/condition (MC/DC) coverage.
+58 high-level / 145 low-level requirements, **2264** requirements-based test
+checks, a 200k-iteration invariant fuzz harness, **100%** statement and
+**100%** branch/condition (MC/DC) coverage.
 
 Each module is one header in `include/` and one source file in `src/`,
 depends only on `<stdint.h>` / `<stdbool.h>` / `<stddef.h>`, and owns no
@@ -47,7 +50,8 @@ make lib        # -> build/libdal_c.a
 make example    # build + run examples/control_loop.c (composed demo)
 make coverage   # statement / branch / MC-DC via gcov (GCC >= 14)
 make report     # coverage + regenerate docs/traceability.html + docs/verification.html
-make sanitize   # suite + example under -fsanitize=undefined,address
+make sanitize   # suite + example + fuzz under -fsanitize=undefined,address
+make fuzz       # 200k-iteration property / invariant harness
 make install PREFIX=/usr/local
 ```
 
@@ -84,9 +88,12 @@ room-temperature loop.
 5. **Traceability** — `tools/gen_rtm.py` regenerates
    [`docs/traceability.html`](docs/traceability.html) and fails on any
    orphan requirement, unimplemented LLR, or untested HLR.
-6. **Static analysis** — `cppcheck` plus the MISRA C:2012 addon (advisory);
-   the suite and example run under UBSan + ASan; the build is exercised on
-   `gcc`, `clang`, and `-m32`.
+6. **Static analysis + fuzz** — `cppcheck` plus the MISRA C:2012 addon
+   ([`MISRA.md`](MISRA.md) records deviations); the suite, example and a
+   200k-iteration invariant fuzz ([`tests/fuzz.c`](tests/fuzz.c)) run under
+   UBSan + ASan; the build is exercised on `gcc`, `clang`, and `-m32`.
+
+The condensed verification plan is [`VERIFICATION_PLAN.md`](VERIFICATION_PLAN.md).
 
 The coverage report, traceability matrix, and verification results are
 published to GitHub Pages by CI.
@@ -112,7 +119,7 @@ src/          implementations, each block tagged with its LLR
 requirements/ per-component HLR/LLR specs
 tests/        dependency-free harness + one requirements-based suite per component
 examples/     control_loop.c — composed worked example
-tools/        gen_rtm.py, gen_report.py — traceability + verification generators
+tools/        gen_rtm.py / gen_report.py / gen_coverage.py — evidence generators
 docs/         GitHub Pages site (landing + generated RTM + coverage + results)
 ```
 

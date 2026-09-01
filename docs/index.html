@@ -98,7 +98,7 @@ table.ds td .desc{font-family:var(--sans);color:var(--ink-lo);font-size:12.5px}
 .covbar i{position:absolute;inset:0;background:var(--green);border-radius:1px}
 
 /* stat strip */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
   background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:26px}
 .stat{background:var(--panel);padding:16px 18px;font-family:var(--mono)}
 .stat .v{font-size:20px;color:var(--ink-hi);font-weight:600}
@@ -161,7 +161,7 @@ a{color:#8fb9d4}
   <div>
     <p class="eyebrow">Safety-critical C &middot; DAL-C style</p>
     <h1 class="title">dal-c</h1>
-    <p class="lede">Ten reusable C99 components, each held to a Design Assurance
+    <p class="lede">Twelve reusable C99 components, each held to a Design Assurance
     Level C process: written requirements, requirements-based tests,
     <b style="color:var(--ink-hi)">100% MC/DC</b>, saturating arithmetic, zero dynamic memory.</p>
 <pre class="code"><span class="cm">/* bounded PID, fixed-point, anti-windup */</span>
@@ -197,9 +197,10 @@ a{color:#8fb9d4}
     </div>
     <div class="lamp"><span class="dot"></span><span class="txt">VERIFY &nbsp;PASS</span></div>
     <div class="readout">
-      <b>10</b> modules &nbsp; <b>51</b> HLR / <b>123</b> LLR<br>
-      <b>1159</b> test checks &nbsp; <b>0</b> fail<br>
+      <b>12</b> modules &nbsp; <b>58</b> HLR / <b>145</b> LLR<br>
+      <b>2264</b> test checks &nbsp; <b>0</b> fail<br>
       no UB &middot; ASan + UBSan clean<br>
+      fuzz: 200k iters &middot; 0 fail<br>
       builds: gcc &middot; clang &middot; -m32
     </div>
   </div>
@@ -219,10 +220,12 @@ a{color:#8fb9d4}
       <tr><td class="ref">SC&#8209;CRC</td><td>sc_crc</td><td><span class="desc">Bitwise CRC-8/SMBUS, CRC-16/CCITT-FALSE, CRC-32/ISO-HDLC. No tables.</span></td><td>8</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;HYS</td><td>sc_hysteresis</td><td><span class="desc">Schmitt-trigger comparator with independent assert / clear thresholds.</span></td><td>12</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;DBN</td><td>sc_debounce</td><td><span class="desc">Integrator debounce for a noisy digital input &mdash; rejects bursts shorter than a sample-count threshold.</span></td><td>9</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
+      <tr><td class="ref">SC&#8209;COBS</td><td>sc_cobs</td><td><span class="desc">Consistent Overhead Byte Stuffing &mdash; frame a byte stream so 0x00 can delimit it. Encode / decode, exact round-trip.</span></td><td>13</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;RB</td><td>sc_ringbuf</td><td><span class="desc">Fixed-capacity byte FIFO over caller storage. No malloc, unambiguous full / empty.</span></td><td>12</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;RL</td><td>sc_ratelimit</td><td><span class="desc">Slew-rate limiter with output clamp, on saturating arithmetic.</span></td><td>18</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;LUT</td><td>sc_lut</td><td><span class="desc">Piecewise-linear lookup table with clamped extrapolation &mdash; sensor linearisation, command shaping.</span></td><td>10</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;SM</td><td>sc_sm</td><td><span class="desc">Table-driven finite state machine engine &mdash; transition table of (from, event, to, action), bounded scan, first match wins.</span></td><td>11</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
+      <tr><td class="ref">SC&#8209;SCH</td><td>sc_sched</td><td><span class="desc">Cooperative cyclic scheduler &mdash; task table with per-task period and phase, deterministic tick-driven dispatch, no preemption.</span></td><td>9</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;PID</td><td>sc_pid</td><td><span class="desc">Positional PID: derivative-on-measurement + low-pass, output clamp, conditional-integration anti-windup.</span></td><td>16</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
     </tbody>
   </table>
@@ -296,11 +299,12 @@ a{color:#8fb9d4}
   <p class="shead"><span class="num">&sect;03</span>Verification</p>
   <h2 class="stitle">Evidence, not adjectives</h2>
   <div class="stats">
-    <div class="stat"><div class="v">51 / 123</div><div class="k">HLR / LLR</div></div>
-    <div class="stat"><div class="v">1159</div><div class="k">test checks</div></div>
+    <div class="stat"><div class="v">58 / 145</div><div class="k">HLR / LLR</div></div>
+    <div class="stat"><div class="v">2264</div><div class="k">test checks</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">statement cov</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">MC/DC</div></div>
     <div class="stat"><div class="v ok">clean</div><div class="k">ASan + UBSan</div></div>
+    <div class="stat"><div class="v ok">0</div><div class="k">fuzz failures</div></div>
     <div class="stat"><div class="v">3</div><div class="k">toolchains</div></div>
   </div>
   <div class="term">
@@ -315,12 +319,14 @@ a{color:#8fb9d4}
   sc_lut           6 tests    20 checks  <b>PASS</b>
   sc_debounce      6 tests    29 checks  <b>PASS</b>
   sc_sm            7 tests    38 checks  <b>PASS</b>
+  sc_sched         4 tests    24 checks  <b>PASS</b>
+  sc_cobs          6 tests  1081 checks  <b>PASS</b>
   sc_pid           8 tests   835 checks  <b>PASS</b>
 
-1159 checks, 0 failure(s)
+2264 checks, 0 failure(s)
 
-Lines executed:100.00% of 346
-Condition outcomes covered:100.00% of 222
+Lines executed:100.00% of 434
+Condition outcomes covered:100.00% of 284
 Traceability: complete (every HLR has LLRs and tests;
               every LLR is implemented and traced).</pre>
   </div>
@@ -328,6 +334,8 @@ Traceability: complete (every HLR has LLRs and tests;
     <a href="verification.html">Verification Results <span class="ar">&#8599;</span></a>
     <a href="traceability.html">Traceability Matrix <span class="ar">&#8599;</span></a>
     <a href="coverage/index.html">Coverage Report <span class="ar">&#8599;</span></a>
+    <a href="https://github.com/YashRao10/dal-c/blob/main/VERIFICATION_PLAN.md">Verification Plan <span class="ar">&#8599;</span></a>
+    <a href="https://github.com/YashRao10/dal-c/blob/main/MISRA.md">MISRA notes <span class="ar">&#8599;</span></a>
   </div>
 </section>
 
@@ -380,7 +388,7 @@ Traceability: complete (every HLR has LLRs and tests;
     <li><b>Tests</b> &mdash; <code>tests/test_&lt;module&gt;.c</code>: each test names its requirement; compound decisions get MC/DC cases.</li>
     <li><b>Coverage</b> &mdash; <code>make coverage</code> instruments with GCC condition coverage; CI fails under 100% line and 100% branch.</li>
     <li><b>Traceability</b> &mdash; <code>tools/gen_rtm.py</code> rebuilds the matrix and fails on any orphan requirement.</li>
-    <li><b>Analysis</b> &mdash; cppcheck + MISRA C:2012 addon; suite and example under UBSan / ASan; gcc, clang and <code>-m32</code>.</li>
+    <li><b>Analysis</b> &mdash; cppcheck + MISRA C:2012 addon (<a href="https://github.com/YashRao10/dal-c/blob/main/MISRA.md">deviations recorded</a>); the suite, example and a 200k-iteration <a href="https://github.com/YashRao10/dal-c/blob/main/VERIFICATION_PLAN.md">invariant fuzz</a> run under UBSan / ASan; built on gcc, clang and <code>-m32</code>.</li>
   </ol>
 </section>
 

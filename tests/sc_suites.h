@@ -26,6 +26,12 @@ extern const unsigned     sc_suite_ringbuf_count;
 extern const sc_test_case sc_suite_ratelimit[];
 extern const unsigned     sc_suite_ratelimit_count;
 
+extern const sc_test_case sc_suite_lut[];
+extern const unsigned     sc_suite_lut_count;
+
+extern const sc_test_case sc_suite_debounce[];
+extern const unsigned     sc_suite_debounce_count;
+
 extern const sc_test_case sc_suite_pid[];
 extern const unsigned     sc_suite_pid_count;
 

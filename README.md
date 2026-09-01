@@ -17,17 +17,21 @@ throughout.
 
 ## Components
 
+Nine components:
+
 | Ref | Module | Purpose | LLR |
 |---|---|---|---|
 | SC-SAT | `sc_sat` | Saturating 32-bit add / subtract — pins at `INT32_MIN`/`INT32_MAX`, never invokes signed-overflow UB. | 6 |
 | SC-FIX | `sc_fixed` | Q16.16 fixed-point: saturating add / sub / mul (round-to-nearest) / div, clamp, abs. | 21 |
 | SC-CRC | `sc_crc` | Bitwise CRC-8/SMBUS, CRC-16/CCITT-FALSE, CRC-32/ISO-HDLC. No lookup tables. | 8 |
 | SC-HYS | `sc_hysteresis` | Schmitt-trigger comparator with independent assert / clear thresholds. | 12 |
+| SC-DBN | `sc_debounce` | Integrator debounce for a noisy digital input — rejects bursts shorter than a sample-count threshold. | 9 |
 | SC-RB | `sc_ringbuf` | Fixed-capacity byte FIFO over caller storage. No `malloc`, unambiguous full / empty. | 12 |
 | SC-RL | `sc_ratelimit` | Slew-rate limiter with output clamp, on saturating arithmetic. | 18 |
+| SC-LUT | `sc_lut` | Piecewise-linear lookup table with clamped extrapolation — sensor linearisation, command shaping. | 10 |
 | SC-PID | `sc_pid` | Positional PID: derivative-on-measurement + first-order low-pass, output clamp, conditional-integration anti-windup. | 16 |
 
-40 high-level / 93 low-level requirements, **1072** requirements-based test
+47 high-level / 112 low-level requirements, **1121** requirements-based test
 checks, **100%** statement and **100%** branch/condition (MC/DC) coverage.
 
 Each module is one header in `include/` and one source file in `src/`,

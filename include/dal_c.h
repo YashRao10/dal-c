@@ -12,8 +12,10 @@
 #include "sc_fixed.h"
 #include "sc_crc.h"
 #include "sc_hysteresis.h"
+#include "sc_debounce.h"
 #include "sc_ringbuf.h"
 #include "sc_ratelimit.h"
+#include "sc_lut.h"
 #include "sc_pid.h"
 
 #endif /* DAL_C_H */

@@ -16,6 +16,7 @@
 #include "sc_ringbuf.h"
 #include "sc_ratelimit.h"
 #include "sc_lut.h"
+#include "sc_sm.h"
 #include "sc_pid.h"
 
 #endif /* DAL_C_H */

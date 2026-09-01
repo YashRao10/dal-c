@@ -152,7 +152,7 @@ a{color:#8fb9d4}
     </svg>
     dal-c
   </div>
-  <nav><a href="#components">Spec</a><a href="verification.html">Verify</a><a href="https://github.com/YashRao10/dal-c">Source&nbsp;&#8599;</a></nav>
+  <nav><a href="#components">Spec</a><a href="architecture.html">Arch</a><a href="verification.html">Verify</a><a href="https://github.com/YashRao10/dal-c">Source&nbsp;&#8599;</a></nav>
 </div></div>
 
 <div class="wrap">
@@ -161,7 +161,7 @@ a{color:#8fb9d4}
   <div>
     <p class="eyebrow">Safety-critical C &middot; DAL-C style</p>
     <h1 class="title">dal-c</h1>
-    <p class="lede">Nine reusable C99 components, each held to a Design Assurance
+    <p class="lede">Ten reusable C99 components, each held to a Design Assurance
     Level C process: written requirements, requirements-based tests,
     <b style="color:var(--ink-hi)">100% MC/DC</b>, saturating arithmetic, zero dynamic memory.</p>
 <pre class="code"><span class="cm">/* bounded PID, fixed-point, anti-windup */</span>
@@ -197,8 +197,8 @@ a{color:#8fb9d4}
     </div>
     <div class="lamp"><span class="dot"></span><span class="txt">VERIFY &nbsp;PASS</span></div>
     <div class="readout">
-      <b>9</b> modules &nbsp; <b>47</b> HLR / <b>112</b> LLR<br>
-      <b>1121</b> test checks &nbsp; <b>0</b> fail<br>
+      <b>10</b> modules &nbsp; <b>51</b> HLR / <b>123</b> LLR<br>
+      <b>1159</b> test checks &nbsp; <b>0</b> fail<br>
       no UB &middot; ASan + UBSan clean<br>
       builds: gcc &middot; clang &middot; -m32
     </div>
@@ -222,6 +222,7 @@ a{color:#8fb9d4}
       <tr><td class="ref">SC&#8209;RB</td><td>sc_ringbuf</td><td><span class="desc">Fixed-capacity byte FIFO over caller storage. No malloc, unambiguous full / empty.</span></td><td>12</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;RL</td><td>sc_ratelimit</td><td><span class="desc">Slew-rate limiter with output clamp, on saturating arithmetic.</span></td><td>18</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;LUT</td><td>sc_lut</td><td><span class="desc">Piecewise-linear lookup table with clamped extrapolation &mdash; sensor linearisation, command shaping.</span></td><td>10</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
+      <tr><td class="ref">SC&#8209;SM</td><td>sc_sm</td><td><span class="desc">Table-driven finite state machine engine &mdash; transition table of (from, event, to, action), bounded scan, first match wins.</span></td><td>11</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;PID</td><td>sc_pid</td><td><span class="desc">Positional PID: derivative-on-measurement + low-pass, output clamp, conditional-integration anti-windup.</span></td><td>16</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
     </tbody>
   </table>
@@ -231,8 +232,8 @@ a{color:#8fb9d4}
   <p class="shead"><span class="num">&sect;02</span>Verification</p>
   <h2 class="stitle">Evidence, not adjectives</h2>
   <div class="stats">
-    <div class="stat"><div class="v">47 / 112</div><div class="k">HLR / LLR</div></div>
-    <div class="stat"><div class="v">1121</div><div class="k">test checks</div></div>
+    <div class="stat"><div class="v">51 / 123</div><div class="k">HLR / LLR</div></div>
+    <div class="stat"><div class="v">1159</div><div class="k">test checks</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">statement cov</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">MC/DC</div></div>
     <div class="stat"><div class="v ok">clean</div><div class="k">ASan + UBSan</div></div>
@@ -247,14 +248,15 @@ a{color:#8fb9d4}
   sc_hysteresis   11 tests    35 checks  <b>PASS</b>
   sc_ringbuf       9 tests    74 checks  <b>PASS</b>
   sc_ratelimit    10 tests    55 checks  <b>PASS</b>
-  sc_lut           6 tests    21 checks  <b>PASS</b>
+  sc_lut           6 tests    20 checks  <b>PASS</b>
   sc_debounce      6 tests    29 checks  <b>PASS</b>
+  sc_sm            7 tests    38 checks  <b>PASS</b>
   sc_pid           8 tests   835 checks  <b>PASS</b>
 
-1121 checks, 0 failure(s)
+1159 checks, 0 failure(s)
 
-Lines executed:100.00% of 315
-Condition outcomes covered:100.00% of 198
+Lines executed:100.00% of 346
+Condition outcomes covered:100.00% of 222
 Traceability: complete (every HLR has LLRs and tests;
               every LLR is implemented and traced).</pre>
   </div>
@@ -303,6 +305,7 @@ Traceability: complete (every HLR has LLRs and tests;
     </g>
     <text x="640" y="122" fill="#38d17a" font-size="10.5">verified&#8209;by</text>
   </svg>
+  <p style="margin:14px 0 0"><a href="architecture.html" style="font-family:var(--mono);font-size:12.5px">Architecture &mdash; dependency graph, the state-machine framework, the example's signal flow &#8599;</a></p>
 </section>
 
 <section id="build">

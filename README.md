@@ -17,7 +17,7 @@ throughout.
 
 ## Components
 
-Nine components:
+Ten components:
 
 | Ref | Module | Purpose | LLR |
 |---|---|---|---|
@@ -29,9 +29,10 @@ Nine components:
 | SC-RB | `sc_ringbuf` | Fixed-capacity byte FIFO over caller storage. No `malloc`, unambiguous full / empty. | 12 |
 | SC-RL | `sc_ratelimit` | Slew-rate limiter with output clamp, on saturating arithmetic. | 18 |
 | SC-LUT | `sc_lut` | Piecewise-linear lookup table with clamped extrapolation — sensor linearisation, command shaping. | 10 |
+| SC-SM | `sc_sm` | Table-driven finite state machine engine — transition table of (from, event, to, action), bounded scan, first match wins. | 11 |
 | SC-PID | `sc_pid` | Positional PID: derivative-on-measurement + first-order low-pass, output clamp, conditional-integration anti-windup. | 16 |
 
-47 high-level / 112 low-level requirements, **1121** requirements-based test
+51 high-level / 123 low-level requirements, **1159** requirements-based test
 checks, **100%** statement and **100%** branch/condition (MC/DC) coverage.
 
 Each module is one header in `include/` and one source file in `src/`,

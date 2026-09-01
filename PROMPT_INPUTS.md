@@ -30,6 +30,18 @@ coverage report + traceability matrix.)
 
 ---
 
+**2026-09-01** (resuming after a session restart):
+
+> welcome back had to restart you can continue working on Dal-c library and
+> making the changes
+
+(Asked which direction; user picked "New component". Added `sc_median` —
+a sliding-window median filter for impulse-noise rejection — through the
+full pipeline: requirements, LLR tags, requirements-based tests, 100% MC/DC,
+fuzz invariant, RTM/verification regen, and the docs-site counts.)
+
+---
+
 ## Scope decisions made during the build
 
 - v1 components: `sc_hysteresis`, `sc_ringbuf`, `sc_ratelimit`. Grew to four

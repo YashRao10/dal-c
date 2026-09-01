@@ -190,6 +190,46 @@ static void fuzz_hysteresis(void)
     }
 }
 
+/* sc_median: the output is always one of the samples currently in the
+ * window, and lies between the window's minimum and maximum. */
+static void fuzz_median(void)
+{
+    sc_median_config_t cfg;
+    sc_median_state_t st;
+    int32_t win[SC_MEDIAN_MAX_WINDOW];
+    unsigned n = 0u, head = 0u;
+    unsigned k;
+
+    cfg.length = (uint8_t)(1u + (2u * (rnd() % 8u)));   /* odd, 1..15 */
+    if (sc_median_config_valid(&cfg) != SC_OK) { return; }
+    if (sc_median_init(&st) != SC_OK) { return; }
+
+    for (k = 0u; k < 40u; k++)
+    {
+        int32_t s = rnd_i32();
+        int32_t m = sc_median_update(&cfg, &st, s);
+        int32_t lo, hi;
+        bool present = false;
+        unsigned i;
+
+        win[head] = s;
+        head = (head + 1u) % (unsigned)cfg.length;
+        if (n < (unsigned)cfg.length) { n++; }
+
+        lo = win[0];
+        hi = win[0];
+        for (i = 0u; i < n; i++)
+        {
+            if (win[i] < lo)  { lo = win[i]; }
+            if (win[i] > hi)  { hi = win[i]; }
+            if (win[i] == m)  { present = true; }
+        }
+        INV(m >= lo);
+        INV(m <= hi);
+        INV(present);
+    }
+}
+
 int main(void)
 {
     uint32_t i;
@@ -201,6 +241,7 @@ int main(void)
         fuzz_ringbuf();
         fuzz_cobs();
         fuzz_hysteresis();
+        fuzz_median();
     }
     (void)printf("%u iterations, %u invariant failure(s)\n", ITERS, failures);
     return (failures == 0u) ? EXIT_SUCCESS : EXIT_FAILURE;

@@ -161,7 +161,7 @@ a{color:#8fb9d4}
   <div>
     <p class="eyebrow">Safety-critical C &middot; DAL-C style</p>
     <h1 class="title">dal-c</h1>
-    <p class="lede">Twelve reusable C99 components, each held to a Design Assurance
+    <p class="lede">Thirteen reusable C99 components, each held to a Design Assurance
     Level C process: written requirements, requirements-based tests,
     <b style="color:var(--ink-hi)">100% MC/DC</b>, saturating arithmetic, zero dynamic memory.</p>
 <pre class="code"><span class="cm">/* bounded PID, fixed-point, anti-windup */</span>
@@ -197,8 +197,8 @@ a{color:#8fb9d4}
     </div>
     <div class="lamp"><span class="dot"></span><span class="txt">VERIFY &nbsp;PASS</span></div>
     <div class="readout">
-      <b>12</b> modules &nbsp; <b>58</b> HLR / <b>145</b> LLR<br>
-      <b>2264</b> test checks &nbsp; <b>0</b> fail<br>
+      <b>13</b> modules &nbsp; <b>62</b> HLR / <b>156</b> LLR<br>
+      <b>2357</b> test checks &nbsp; <b>0</b> fail<br>
       no UB &middot; ASan + UBSan clean<br>
       fuzz: 200k iters &middot; 0 fail<br>
       builds: gcc &middot; clang &middot; -m32
@@ -220,6 +220,7 @@ a{color:#8fb9d4}
       <tr><td class="ref">SC&#8209;CRC</td><td>sc_crc</td><td><span class="desc">Bitwise CRC-8/SMBUS, CRC-16/CCITT-FALSE, CRC-32/ISO-HDLC. No tables.</span></td><td>8</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;HYS</td><td>sc_hysteresis</td><td><span class="desc">Schmitt-trigger comparator with independent assert / clear thresholds.</span></td><td>12</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;DBN</td><td>sc_debounce</td><td><span class="desc">Integrator debounce for a noisy digital input &mdash; rejects bursts shorter than a sample-count threshold.</span></td><td>9</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
+      <tr><td class="ref">SC&#8209;MED</td><td>sc_median</td><td><span class="desc">Sliding-window median filter &mdash; rejects isolated spikes an averaging filter would smear. Odd window, in-state storage, bounded insertion sort.</span></td><td>11</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;COBS</td><td>sc_cobs</td><td><span class="desc">Consistent Overhead Byte Stuffing &mdash; frame a byte stream so 0x00 can delimit it. Encode / decode, exact round-trip.</span></td><td>13</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;RB</td><td>sc_ringbuf</td><td><span class="desc">Fixed-capacity byte FIFO over caller storage. No malloc, unambiguous full / empty.</span></td><td>12</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
       <tr><td class="ref">SC&#8209;RL</td><td>sc_ratelimit</td><td><span class="desc">Slew-rate limiter with output clamp, on saturating arithmetic.</span></td><td>18</td><td><span class="covbar"><i style="width:100%"></i></span></td></tr>
@@ -234,7 +235,7 @@ a{color:#8fb9d4}
 <section id="architecture">
   <p class="shead"><span class="num">&sect;02</span>Architecture</p>
   <h2 class="stitle">How the parts fit</h2>
-  <p style="color:var(--ink-lo);margin:0 0 8px;max-width:58ch">Seven components
+  <p style="color:var(--ink-lo);margin:0 0 8px;max-width:58ch">Eight components
   are leaf primitives; <code>sc_sat</code> is the saturating-arithmetic base
   three others build on, and <code>sc_fixed</code> in turn underpins the PID.
   Nothing reaches outside the standard headers.</p>
@@ -299,8 +300,8 @@ a{color:#8fb9d4}
   <p class="shead"><span class="num">&sect;03</span>Verification</p>
   <h2 class="stitle">Evidence, not adjectives</h2>
   <div class="stats">
-    <div class="stat"><div class="v">58 / 145</div><div class="k">HLR / LLR</div></div>
-    <div class="stat"><div class="v">2264</div><div class="k">test checks</div></div>
+    <div class="stat"><div class="v">62 / 156</div><div class="k">HLR / LLR</div></div>
+    <div class="stat"><div class="v">2357</div><div class="k">test checks</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">statement cov</div></div>
     <div class="stat"><div class="v ok">100%</div><div class="k">MC/DC</div></div>
     <div class="stat"><div class="v ok">clean</div><div class="k">ASan + UBSan</div></div>
@@ -322,11 +323,12 @@ a{color:#8fb9d4}
   sc_sched         4 tests    24 checks  <b>PASS</b>
   sc_cobs          6 tests  1081 checks  <b>PASS</b>
   sc_pid           8 tests   835 checks  <b>PASS</b>
+  sc_median        9 tests    93 checks  <b>PASS</b>
 
-2264 checks, 0 failure(s)
+2357 checks, 0 failure(s)
 
-Lines executed:100.00% of 434
-Condition outcomes covered:100.00% of 284
+Lines executed:100.00% of 472
+Condition outcomes covered:100.00% of 314
 Traceability: complete (every HLR has LLRs and tests;
               every LLR is implemented and traced).</pre>
   </div>

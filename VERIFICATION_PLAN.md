@@ -28,9 +28,10 @@ For every component:
   conditions are independent, masking MC/DC where short-circuit `&&`/`||`
   makes a combination unreachable).
 - **Property-based.** `tests/fuzz.c` drives `sc_sat`, `sc_ratelimit`,
-  `sc_pid`, `sc_ringbuf`, `sc_cobs` and `sc_hysteresis` with a deterministic
-  PRNG and asserts input-independent invariants (output always clamped, FIFO
-  order preserved, encode/decode round-trips, arithmetic never wraps).
+  `sc_pid`, `sc_ringbuf`, `sc_cobs`, `sc_hysteresis` and `sc_median` with a
+  deterministic PRNG and asserts input-independent invariants (output always
+  clamped, FIFO order preserved, encode/decode round-trips, the median is
+  always a windowed sample, arithmetic never wraps).
 - **Structural coverage** is measured on an `-O0` instrumented build so the
   mapping from object to source is exact.
 

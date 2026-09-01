@@ -13,6 +13,7 @@
 #include "sc_crc.h"
 #include "sc_hysteresis.h"
 #include "sc_debounce.h"
+#include "sc_median.h"
 #include "sc_ringbuf.h"
 #include "sc_cobs.h"
 #include "sc_ratelimit.h"

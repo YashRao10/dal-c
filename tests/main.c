@@ -33,7 +33,7 @@ typedef struct
     unsigned           count;
 } suite_entry;
 
-#define SUITE_COUNT 4u
+#define SUITE_COUNT 7u
 
 int main(int argc, char **argv)
 {
@@ -44,21 +44,30 @@ int main(int argc, char **argv)
     suites[0].name = "sc_sat";
     suites[0].cases = sc_suite_sat;
     suites[0].count = sc_suite_sat_count;
-    suites[1].name = "sc_hysteresis";
-    suites[1].cases = sc_suite_hysteresis;
-    suites[1].count = sc_suite_hysteresis_count;
-    suites[2].name = "sc_ringbuf";
-    suites[2].cases = sc_suite_ringbuf;
-    suites[2].count = sc_suite_ringbuf_count;
-    suites[3].name = "sc_ratelimit";
-    suites[3].cases = sc_suite_ratelimit;
-    suites[3].count = sc_suite_ratelimit_count;
+    suites[1].name = "sc_fixed";
+    suites[1].cases = sc_suite_fixed;
+    suites[1].count = sc_suite_fixed_count;
+    suites[2].name = "sc_crc";
+    suites[2].cases = sc_suite_crc;
+    suites[2].count = sc_suite_crc_count;
+    suites[3].name = "sc_hysteresis";
+    suites[3].cases = sc_suite_hysteresis;
+    suites[3].count = sc_suite_hysteresis_count;
+    suites[4].name = "sc_ringbuf";
+    suites[4].cases = sc_suite_ringbuf;
+    suites[4].count = sc_suite_ringbuf_count;
+    suites[5].name = "sc_ratelimit";
+    suites[5].cases = sc_suite_ratelimit;
+    suites[5].count = sc_suite_ratelimit_count;
+    suites[6].name = "sc_pid";
+    suites[6].cases = sc_suite_pid;
+    suites[6].count = sc_suite_pid_count;
 
     for (s = 0u; s < SUITE_COUNT; s++)
     {
         unsigned before_checks = sc_test_checks;
         unsigned fails = sc_test_run(suites[s].cases, suites[s].count);
-        (void)printf("  %-14s %2u tests  %3u checks  %s\n",
+        (void)printf("  %-14s %3u tests  %4u checks  %s\n",
                      suites[s].name, suites[s].count,
                      sc_test_checks - before_checks,
                      (fails == 0u) ? "PASS" : "FAIL");

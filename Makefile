@@ -6,6 +6,8 @@
 #   make clean      remove build and coverage artifacts
 
 CC       ?= gcc
+AR       ?= ar
+PREFIX   ?= /usr/local
 CSTD     := -std=c99
 WARN     := -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow \
             -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wundef
@@ -21,8 +23,9 @@ SRC_OBJ  := $(patsubst src/%.c,$(BUILD)/%.o,$(SRC))
 TEST_OBJ := $(patsubst tests/%.c,$(BUILD)/t_%.o,$(TEST_SRC))
 OBJ      := $(SRC_OBJ) $(TEST_OBJ)
 TEST_BIN := $(BUILD)/dal-c-tests
+LIB      := $(BUILD)/libdal_c.a
 
-.PHONY: all test coverage report clean
+.PHONY: all test coverage report lib example install sanitize clean
 
 all: test
 
@@ -41,6 +44,26 @@ $(TEST_BIN): $(OBJ)
 test: $(TEST_BIN)
 	./$(TEST_BIN)
 
+# Static library + umbrella header.
+lib: $(LIB)
+
+$(LIB): $(SRC_OBJ)
+	$(AR) rcs $@ $^
+
+install: lib
+	install -d $(DESTDIR)$(PREFIX)/lib $(DESTDIR)$(PREFIX)/include/dal_c
+	install -m 644 $(LIB) $(DESTDIR)$(PREFIX)/lib/
+	install -m 644 include/*.h $(DESTDIR)$(PREFIX)/include/dal_c/
+
+# Worked example that composes several components; builds and runs it.
+example: $(BUILD)/example
+	./$(BUILD)/example
+
+# compiled straight from source (not the shared objects) so it always
+# reflects the current CFLAGS and never links against instrumented objects
+$(BUILD)/example: examples/control_loop.c $(SRC) $(HDR) | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) examples/control_loop.c $(SRC) -o $@
+
 # Structural coverage. MC/DC via GCC condition coverage (GCC >= 14).
 coverage: OPT := -O0 -g --coverage -fcondition-coverage
 coverage: clean $(TEST_BIN)
@@ -55,6 +78,12 @@ coverage: clean $(TEST_BIN)
 report: coverage
 	python3 tools/gen_rtm.py
 	python3 tools/gen_report.py
+
+# Run the suite and the example under UBSan + ASan; any finding aborts.
+sanitize: OPT := -O1 -g -fsanitize=undefined,address -fno-sanitize-recover=all
+sanitize: clean $(TEST_BIN) $(BUILD)/example
+	./$(TEST_BIN)
+	./$(BUILD)/example >/dev/null
 
 clean:
 	rm -rf $(BUILD) *.gcov *.gcda *.gcno

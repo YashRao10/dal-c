@@ -26,10 +26,15 @@ jobs:
       - name: Build and run the test suite (strict warnings, -Werror)
         run: make CC=gcc-14
 
+      - name: Worked example
+        run: make example CC=gcc-14
+
+      - name: Static library
+        run: make lib CC=gcc-14 && ls -l build/libdal_c.a
+
       - name: Coverage + traceability + verification report
-        # runs the suite instrumented, checks 100% line and 100% MC/DC,
-        # regenerates docs/traceability.html and docs/verification.html,
-        # and fails on any traceability gap
+        # instrumented run; fails under 100% line / 100% MC-DC, regenerates
+        # docs/traceability.html and docs/verification.html, fails on any gap
         run: make report CC=gcc-14
 
       - name: Browsable coverage report
@@ -45,7 +50,14 @@ jobs:
           cppcheck --std=c99 --enable=warning,style,performance,portability \
                    --inline-suppr --error-exitcode=1 \
                    --suppress=missingIncludeSystem \
-                   -I include src
+                   -I include src examples
+
+      - name: MISRA C:2012 advisory (cppcheck addon, informational)
+        run: |
+          cppcheck --std=c99 --addon=misra --enable=all \
+                   --suppress=missingIncludeSystem --inline-suppr \
+                   -I include src 2>&1 | tee misra.txt || true
+          echo "MISRA advisory findings: $(grep -c 'misra-c2012' misra.txt || echo 0)"
 
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'
@@ -53,8 +65,38 @@ jobs:
         with:
           path: docs
 
+  portability:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { cc: clang,  extra: "" }
+          - { cc: gcc,    extra: "OPT=-O2 -g -m32" }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang gcc-multilib
+      - name: Build and test (${{ matrix.cc }} ${{ matrix.extra }})
+        run: make CC=${{ matrix.cc }} ${{ matrix.extra }}
+      - name: Example
+        run: make example CC=${{ matrix.cc }} ${{ matrix.extra }}
+
+  sanitize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Suite + example under UBSan / ASan
+        run: make sanitize CC=clang
+
   deploy:
-    needs: verify
+    # portability (clang / -m32) runs alongside but does not gate the Pages
+    # deploy until it has been confirmed green once.
+    needs: [verify, sanitize]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     permissions:

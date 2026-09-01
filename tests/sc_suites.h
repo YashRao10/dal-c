@@ -2,8 +2,6 @@
  * sc_suites.h -- registry of test suites.
  *
  * Each test file defines its table and count; main.c walks the list.
- * Keeping the declarations in one header gives one place to see every suite
- * and keeps -Wmissing-prototypes-style checks satisfied.
  */
 #ifndef DAL_C_SC_SUITES_H
 #define DAL_C_SC_SUITES_H
@@ -13,6 +11,12 @@
 extern const sc_test_case sc_suite_sat[];
 extern const unsigned     sc_suite_sat_count;
 
+extern const sc_test_case sc_suite_fixed[];
+extern const unsigned     sc_suite_fixed_count;
+
+extern const sc_test_case sc_suite_crc[];
+extern const unsigned     sc_suite_crc_count;
+
 extern const sc_test_case sc_suite_hysteresis[];
 extern const unsigned     sc_suite_hysteresis_count;
 
@@ -21,5 +25,8 @@ extern const unsigned     sc_suite_ringbuf_count;
 
 extern const sc_test_case sc_suite_ratelimit[];
 extern const unsigned     sc_suite_ratelimit_count;
+
+extern const sc_test_case sc_suite_pid[];
+extern const unsigned     sc_suite_pid_count;
 
 #endif /* DAL_C_SC_SUITES_H */

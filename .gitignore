@@ -3,11 +3,10 @@ build/
 *.o
 *.out
 
-# coverage artifacts
+# coverage artifacts (docs/coverage/ is generated but tracked)
 *.gcda
 *.gcno
 *.gcov
-coverage/
 *.info
 
 # the generated docs pages (traceability, verification, coverage) are

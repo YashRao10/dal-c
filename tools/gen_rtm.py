@@ -205,35 +205,56 @@ _PAGE = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dal-c &mdash; Requirements Traceability Matrix</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{{color-scheme:dark}}
-body{{margin:0;background:#0b0f14;color:#c9d4de;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}}
-.wrap{{max-width:1100px;margin:0 auto;padding:32px 20px 64px}}
-h1{{font-size:20px;letter-spacing:.02em;margin:0 0 4px;color:#e8eef4}}
-.sub{{color:#7c8b99;margin:0 0 24px}}
-table{{width:100%;border-collapse:collapse;font-size:13px}}
-th,td{{text-align:left;padding:8px 10px;border-bottom:1px solid #1c2632;vertical-align:top}}
-th{{color:#8fa2b3;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.06em;border-bottom:1px solid #2a3746}}
-tr.grp td{{background:#111823;color:#5cc2b8;font-weight:600;font-family:ui-monospace,monospace;letter-spacing:.03em;border-bottom:1px solid #2a3746}}
-.t{{color:#8695a4;font-size:12px;margin-top:2px}}
-code{{background:#131c26;padding:1px 5px;border-radius:3px;color:#a8c7dd;font-size:12px}}
-.ok{{color:#54c085;font-weight:600}}
-.bad{{color:#e2705c;font-weight:600}}
-.clean{{background:#12241c;border:1px solid #1f5138;color:#54c085;padding:10px 14px;border-radius:6px;margin-bottom:20px}}
-.gaps{{background:#241615;border:1px solid #5a2a22;color:#e2705c;padding:10px 14px;border-radius:6px;margin-bottom:20px}}
+:root{{--bg:#07090c;--panel:#0c1015;--line:#1b232c;--ink:#c6d0d8;--ink-hi:#eef3f6;
+  --ink-lo:#6c7a87;--amber:#f2b13c;--amber-dim:#8a6a2c;--green:#38d17a;--red:#e2564a;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;--sans:"IBM Plex Sans",system-ui,sans-serif;color-scheme:dark}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:26px 26px;background-position:-1px -1px}}
+.wrap{{max-width:1080px;margin:0 auto;padding:40px 22px 72px}}
+.mark{{font-family:var(--mono);font-weight:600;color:var(--ink-hi);font-size:14px;
+  display:flex;align-items:center;gap:8px;margin-bottom:26px}}
+.mark svg{{display:block}}
+.mark a{{color:var(--ink-lo);text-decoration:none;font-size:11px;letter-spacing:.09em;text-transform:uppercase;margin-left:auto}}
+h1{{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:.01em;margin:0 0 4px;color:var(--ink-hi)}}
+.sub{{color:var(--ink-lo);margin:0 0 22px;max-width:64ch}}
+.eyebrow{{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 10px}}
+table{{width:100%;border-collapse:collapse;font-size:12.5px;font-family:var(--mono)}}
+th,td{{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}}
+th{{color:var(--amber);font-weight:500;text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;border-bottom:1px solid var(--amber-dim)}}
+tr.grp td{{background:var(--panel);color:var(--ink-hi);font-weight:600;letter-spacing:.04em;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}}
+.t{{font-family:var(--sans);color:var(--ink-lo);font-size:12.5px;margin-top:3px}}
+code{{background:#11161c;border:1px solid var(--line);padding:1px 5px;border-radius:3px;color:#a9c0cf;font-size:11.5px}}
+.ok{{color:var(--green);font-weight:600}}
+.bad{{color:var(--red);font-weight:600}}
+.clean{{font-family:var(--mono);background:#0c1a13;border:1px solid #1f5138;color:var(--green);
+  padding:11px 15px;border-radius:6px;margin-bottom:22px;font-size:12.5px;letter-spacing:.02em}}
+.gaps{{font-family:var(--mono);background:#1c1210;border:1px solid #5a2a22;color:var(--red);
+  padding:11px 15px;border-radius:6px;margin-bottom:22px;font-size:12.5px}}
 .gaps ul{{margin:6px 0 0;padding-left:20px}}
-footer{{margin-top:28px;color:#5c6b78;font-size:12px}}
+footer{{margin-top:30px;color:var(--ink-lo);font-size:11px;font-family:var(--mono)}}
 </style></head><body><div class="wrap">
-<h1>dal-c &mdash; Requirements Traceability Matrix</h1>
-<p class="sub">High-level requirement &rarr; low-level requirement &rarr; source &rarr; verification.
-Generated from <code>requirements/*.md</code> and confirmed against the source tags and test suites.</p>
+<div class="mark">
+  <svg width="24" height="16" viewBox="0 0 26 18" fill="none"><path d="M2 13 C2 5 8 3 13 9 C18 15 24 13 24 5" stroke="#f2b13c" stroke-width="2" stroke-linecap="round"/></svg>
+  dal-c <a href="index.html">&larr; overview</a>
+</div>
+<p class="eyebrow">&sect; Traceability</p>
+<h1>Requirements Traceability Matrix</h1>
+<p class="sub">High-level requirement &rarr; low-level requirement &rarr; source function &rarr;
+verifying suite. Generated from <code>requirements/*.md</code> and confirmed against the
+<code>/* LLR-... */</code> source tags and the test files.</p>
 {banner}
 <table>
 <thead><tr><th>High-Level Requirement</th><th>Low-Level Requirement</th><th>Implemented in</th><th>Verified by</th><th>Status</th></tr></thead>
 <tbody>
 {rows}
 </tbody></table>
-<footer>dal-c &middot; generated by tools/gen_rtm.py</footer>
+<footer>dal-c &middot; tools/gen_rtm.py</footer>
 </div></body></html>
 """
 

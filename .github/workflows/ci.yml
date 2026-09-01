@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 gcovr cppcheck python3
+          gcc-14 --version | head -1
+          gcovr --version | head -1
+          cppcheck --version
+
+      - name: Build and run the test suite (strict warnings, -Werror)
+        run: make CC=gcc-14
+
+      - name: Structural coverage (statement / branch / MC-DC)
+        run: make coverage CC=gcc-14
+
+      - name: Coverage report + thresholds
+        run: |
+          mkdir -p docs/coverage
+          gcovr --root . --filter 'src/' \
+                --html-details docs/coverage/index.html \
+                --txt --print-summary \
+                --decisions \
+                --fail-under-line 100 --fail-under-branch 100
+
+      - name: Static analysis (cppcheck)
+        run: |
+          cppcheck --std=c99 --enable=warning,style,performance,portability \
+                   --inline-suppr --error-exitcode=1 \
+                   --suppress=missingIncludeSystem \
+                   -I include src
+
+      - name: Requirements traceability matrix
+        run: python3 tools/gen_rtm.py
+
+      - name: Bundle site
+        run: cp -f README.md docs/README.md
+        # docs/index.html, docs/traceability.html, docs/coverage/ are now all present
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

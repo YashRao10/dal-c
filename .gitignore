@@ -1,0 +1,22 @@
+# build output
+build/
+*.o
+*.out
+
+# coverage artifacts
+*.gcda
+*.gcno
+*.gcov
+coverage/
+*.info
+
+# CI-generated site pieces (docs/index.html and docs/traceability.html are tracked)
+docs/coverage/
+docs/README.md
+
+# editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

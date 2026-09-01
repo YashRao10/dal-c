@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dal-c &mdash; safety-critical C component library</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0f14;color:#c9d4de;
+  font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:48px 22px 80px}
+h1{font-size:26px;letter-spacing:.01em;margin:0 0 6px;color:#e8eef4}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:#5cc2b8;
+  margin:40px 0 14px;border-bottom:1px solid #1c2632;padding-bottom:6px}
+p{margin:0 0 14px}
+a{color:#7db8dd}
+.tag{color:#7c8b99;margin:0 0 20px;font-size:14px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px}
+.badges img{height:20px}
+code{background:#131c26;padding:1px 6px;border-radius:3px;color:#a8c7dd;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1c2632;vertical-align:top}
+th{color:#8fa2b3;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td code{font-size:12px}
+.k{color:#8695a4;font-size:13px}
+.metrics{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 0}
+.metric{background:#111823;border:1px solid #1c2632;border-radius:8px;padding:12px 16px;flex:1;min-width:130px}
+.metric .n{font-size:22px;color:#e8eef4;font-weight:600}
+.metric .l{color:#7c8b99;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+ol.flow{margin:0;padding-left:22px}
+ol.flow li{margin:6px 0}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.links a{background:#111823;border:1px solid #26333f;border-radius:8px;
+  padding:10px 16px;text-decoration:none;color:#cfe0ec}
+.links a:hover{border-color:#5cc2b8}
+footer{margin-top:44px;color:#5c6b78;font-size:12px}
+</style></head><body><div class="wrap">
+
+<div class="badges">
+  <img src="https://github.com/YashRao10/dal-c/actions/workflows/ci.yml/badge.svg" alt="CI status">
+  <img src="https://img.shields.io/badge/coverage-100%25%20line%20%2F%20100%25%20MC%2FDC-2f8f5b" alt="coverage">
+  <img src="https://img.shields.io/badge/C-C99%20freestanding-6b8eaa" alt="C99">
+  <img src="https://img.shields.io/badge/license-MIT-8b949e" alt="MIT">
+</div>
+
+<h1>dal-c</h1>
+<p class="tag">A small library of reusable C components built to a Design Assurance
+Level C style &mdash; requirements-driven, MC/DC-covered, statically analysed,
+no dynamic memory.</p>
+
+<p>Each component is a self-contained C99 module with an explicit set of
+high- and low-level requirements, requirements-based tests, and structural
+coverage (statement, branch, and Modified Condition/Decision Coverage). The
+build runs with <code>-Wall -Wextra -Wpedantic -Werror -Wconversion</code>
+and a few more; the CI pipeline fails on any warning, any uncovered line or
+condition, any static-analysis finding, or any break in the requirements
+trace.</p>
+
+<h2>Components</h2>
+<table>
+<thead><tr><th>Module</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>sc_sat</code></td><td>Saturating 32-bit add / subtract &mdash; pins at the integer limits instead of invoking overflow UB.</td></tr>
+<tr><td><code>sc_hysteresis</code></td><td>Schmitt-trigger comparator with independent assert / clear thresholds, so a noisy signal near the trip point can't chatter.</td></tr>
+<tr><td><code>sc_ringbuf</code></td><td>Fixed-capacity byte FIFO over caller storage. No <code>malloc</code>, no power-of-two constraint, unambiguous full/empty.</td></tr>
+<tr><td><code>sc_ratelimit</code></td><td>Slew-rate limiter with output clamp. Bounds how fast a command can change and keeps it in range, on saturating arithmetic.</td></tr>
+</tbody>
+</table>
+
+<h2>Verification</h2>
+<div class="metrics">
+  <div class="metric"><div class="n">22 / 48</div><div class="l">HLR / LLR</div></div>
+  <div class="metric"><div class="n">184</div><div class="l">test checks</div></div>
+  <div class="metric"><div class="n">100%</div><div class="l">line coverage</div></div>
+  <div class="metric"><div class="n">100%</div><div class="l">MC/DC</div></div>
+</div>
+<div class="links">
+  <a href="traceability.html">Requirements Traceability Matrix &rarr;</a>
+  <a href="coverage/index.html">Coverage Report &rarr;</a>
+  <a href="https://github.com/YashRao10/dal-c">Source on GitHub &rarr;</a>
+</div>
+
+<h2>How each component is built</h2>
+<ol class="flow">
+  <li><b>Requirements</b> &mdash; <code>requirements/&lt;module&gt;.md</code>: high-level requirements, then low-level requirements that each trace up to one or more HLRs and name the function that implements them.</li>
+  <li><b>Code</b> &mdash; every implementation block carries an <code>/* LLR-... */</code> tag, giving a bidirectional trace between requirement and source.</li>
+  <li><b>Requirements-based tests</b> &mdash; <code>tests/test_&lt;module&gt;.c</code>: each test names the requirement it verifies; compound decisions get cases chosen for MC/DC.</li>
+  <li><b>Structural coverage</b> &mdash; <code>make coverage</code> instruments with GCC condition coverage; CI fails under 100% line and 100% branch/condition.</li>
+  <li><b>Traceability</b> &mdash; <code>tools/gen_rtm.py</code> rebuilds the matrix and fails the build on any orphan requirement, missing implementation, or missing test.</li>
+  <li><b>Static analysis</b> &mdash; cppcheck on every push; MISRA C:2012 is the coding-style target, with deviations documented in <code>include/sc_common.h</code>.</li>
+</ol>
+
+<footer>dal-c &middot; MIT &middot; not affiliated with any airframer or certification authority &mdash; a demonstration of process, not certified software</footer>
+</div></body></html>

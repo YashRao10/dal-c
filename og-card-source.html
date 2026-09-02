@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090c;--panel:#0c1015;--line:#1b232c;--ink:#c6d0d8;--ink-hi:#eef3f6;
+  --ink-lo:#6c7a87;--amber:#f2b13c;--amber-dim:#8a6a2c;--green:#38d17a;
+  --mono:"IBM Plex Mono",ui-monospace,"Consolas",monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{
+  background:
+    linear-gradient(var(--line) 1px,transparent 1px) 0 0/32px 32px,
+    linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/32px 32px,
+    radial-gradient(ellipse 720px 520px at 90% 110%, rgba(242,177,60,.10), transparent 60%),
+    var(--bg);
+  background-position:-1px -1px, -1px -1px, 0 0, 0 0;
+  font-family:var(--sans);position:relative;color:var(--ink);
+}
+.frame{position:absolute;inset:38px;border:1px solid var(--line);border-radius:14px}
+.wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 92px}
+.brand{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-weight:600;font-size:22px;color:var(--ink-hi);margin-bottom:40px}
+.eyebrow{font-family:var(--mono);font-size:18px;letter-spacing:4px;color:var(--amber);text-transform:uppercase;font-weight:600;margin-bottom:20px}
+h1{font-family:var(--mono);font-size:96px;font-weight:600;color:var(--ink-hi);letter-spacing:-2px;margin-bottom:26px;line-height:1}
+.rule{width:96px;height:4px;background:var(--amber);border-radius:2px;margin-bottom:28px}
+p{font-size:27px;color:var(--ink);max-width:900px;line-height:1.5;margin-bottom:40px}
+.stats{display:flex;gap:34px;font-family:var(--mono);font-size:19px;color:var(--ink-lo);align-items:center}
+.stats b{color:var(--ink-hi);font-weight:600}
+.stats .ok{color:var(--green)}
+.gauge{display:flex;align-items:baseline;gap:9px}
+.sep{color:var(--amber-dim)}
+</style></head>
+<body>
+<div class="frame"></div>
+<div class="wrap">
+  <div class="brand">
+    <svg width="30" height="20" viewBox="0 0 26 18" fill="none"><path d="M2 13 C2 5 8 3 13 9 C18 15 24 13 24 5" stroke="#f2b13c" stroke-width="2" stroke-linecap="round"/></svg>
+    dal-c library
+  </div>
+  <div class="eyebrow">Safety-critical C &middot; DAL-C style</div>
+  <h1>dal-c</h1>
+  <div class="rule"></div>
+  <p>15 reusable C99 components, each held to a DO-178C Design Assurance Level C process: written requirements, requirements-based tests, zero dynamic memory.</p>
+  <div class="stats">
+    <span class="gauge"><b class="ok">100%</b> statement / MC&sol;DC</span>
+    <span class="gauge"><b>2,479</b> test checks</span>
+    <span class="gauge"><b>73</b> HLR / <b>182</b> LLR</span>
+    <span class="sep">&middot;</span>
+    <span>gcc &middot; clang &middot; -m32</span>
+  </div>
+</div>
+</body></html>

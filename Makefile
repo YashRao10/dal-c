@@ -8,6 +8,16 @@
 CC       ?= gcc
 AR       ?= ar
 PREFIX   ?= /usr/local
+
+# gcov must match the compiler that wrote the .gcno files: a gcc-14 build
+# needs gcov-14 (older gcov rejects --conditions and prints its help text
+# instead of coverage data). gcc-N -> gcov-N; plain gcc or anything else
+# -> gcov. Override with GCOV=... if your toolchain names it differently.
+ifneq (,$(filter gcc-%,$(CC)))
+GCOV     ?= $(CC:gcc-%=gcov-%)
+else
+GCOV     ?= gcov
+endif
 CSTD     := -std=c99
 WARN     := -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow \
             -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wundef
@@ -69,8 +79,8 @@ coverage: OPT := -O0 -g --coverage -fcondition-coverage
 coverage: clean $(TEST_BIN)
 	./$(TEST_BIN) --report | tee $(BUILD)/test-output.txt
 	@echo
-	@echo "=== gcov: statement / branch / condition (MC-DC) ==="
-	gcov --branch-counts --conditions --object-directory $(BUILD) $(SRC) \
+	@echo "=== $(GCOV): statement / branch / condition (MC-DC) ==="
+	$(GCOV) --branch-counts --conditions --object-directory $(BUILD) $(SRC) \
 		| tee $(BUILD)/coverage-summary.txt
 	@mkdir -p $(BUILD)/gcov && mv -f *.gcov $(BUILD)/gcov/ 2>/dev/null || true
 

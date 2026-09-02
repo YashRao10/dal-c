@@ -66,18 +66,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { cc: clang,  extra: "" }
-          - { cc: gcc,    extra: "OPT=-O2 -g -m32" }
+          - { cc: clang, opt: "-O2 -g" }
+          - { cc: gcc,   opt: "-O2 -g -m32" }
     steps:
       - uses: actions/checkout@v4
       - name: Install toolchain
         run: |
           sudo apt-get update
           sudo apt-get install -y clang gcc-multilib
-      - name: Build and test (${{ matrix.cc }} ${{ matrix.extra }})
-        run: make CC=${{ matrix.cc }} ${{ matrix.extra }}
+      - name: Build and test (${{ matrix.cc }} ${{ matrix.opt }})
+        run: make CC=${{ matrix.cc }} OPT="${{ matrix.opt }}"
       - name: Example
-        run: make example CC=${{ matrix.cc }} ${{ matrix.extra }}
+        run: make example CC=${{ matrix.cc }} OPT="${{ matrix.opt }}"
 
   sanitize:
     runs-on: ubuntu-24.04

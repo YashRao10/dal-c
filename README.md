@@ -61,6 +61,21 @@ make install PREFIX=/usr/local
 No dependencies beyond a C99 compiler. `make coverage` needs GCC ≥ 14 for
 condition (MC/DC) coverage; `make report` also needs Python 3.
 
+**macOS link failure (`ld: tapi error: malformed file`, `unknown architecture
+arm64e.x1-macos`):** a broken `MacOSX27.0.sdk` shipped as the *default* active
+SDK by a recent Command Line Tools release, ahead of the OS's own actual
+version — its `libSystem.tbd` lists an architecture triple this `ld` doesn't
+recognize yet. Not a dal-c issue; confirmed by compiling clean (all `.o` files
+build fine, only the final link step fails). Fix: point `SDKROOT` at an
+installed SDK that actually matches your OS version instead, e.g.:
+
+```sh
+SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk make
+```
+
+(`ls /Library/Developer/CommandLineTools/SDKs/` to see what's installed on
+your machine; pick the highest one below 27.0.)
+
 ## Using it
 
 ```c
